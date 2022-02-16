@@ -1,0 +1,22 @@
+{% extends 'layouts/app.twig' %}
+
+{% block title %}All posts{% endblock %}
+
+{% block content %}
+	<div class = "row">
+		<div class = "col-md-2 offset-10">
+    		<a href = "#" class = "btn btn-primary btn-success">Create new post</a>
+    	</div>	
+    	{% if posts %}
+			{% for post in posts %}
+				<div class = "col-md-10 offset-1">
+    				<h2>{{ post.title }}</h2>
+    				<p>{{ post.content }}</p>
+    				<a href = "{{ path_for('singlePost.view', { 'ID': post.ID}) }}" class = "btn btn-primary btn-sm">View</a>
+    			</div>
+    		{% endfor %}	
+		{% else %}
+			<p>No posts to show.</p>
+		{% endif %}		
+    </div>
+{% endblock %}
