@@ -1,0 +1,31 @@
+{% extends 'layouts/app.twig' %}
+
+{% block title %}Give or take privileges to users{% endblock %}
+
+{% block content %}
+	<div class = "row">
+		<div class = "col-md-6 offset-3 my-2">
+			<h1>Give or take privileges to users</h1>
+			{% for user in users %}
+				<ul class="list-group">
+  					<li class="list-group-item my-2">
+  						{{ user.Name }}
+  						<div class="float-right">
+  							<a href = "{{ path_for('giveAdminRole', { 'ID': user.ID}) }}" class = "btn btn-primary btn-lr">Give</a>
+    					</div>
+  					</li>	
+				</ul>
+    		{% endfor %}
+    		{% for usersAdmin in usersAdmins %}
+				<ul class="list-group">
+  					<li class="list-group-item my-2">
+  						{{ usersAdmin.Name }}
+  						<div class="float-right">
+    						<a href = "{{ path_for('giveUserRole', { 'ID': usersAdmin.ID}) }}" class = "btn btn-danger btn-lr">Take</a>
+    					</div>
+  					</li>	
+				</ul>
+    		{% endfor %}
+		</div>		
+    </div>
+{% endblock %}

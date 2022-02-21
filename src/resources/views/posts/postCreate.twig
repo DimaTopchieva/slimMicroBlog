@@ -1,0 +1,22 @@
+{% extends 'layouts/app.twig' %}
+
+{% block title %}Create post{% endblock %}
+
+{% block content %}	
+	<div class = "row">
+		<div class = "col-md-10 offset-1">
+			<form action="{{ path_for('newPost.created') }}" method="POST">
+  				<div class="form-group">
+    				<label for="titleId">Post title</label>
+    				<input type="text" class="form-control" name="title" id="titleId" maxlength="255" required >
+  				</div>
+  				<div class="form-group">
+    				<label for="bodyPostId">Content</label>
+    				<textarea class="form-control" id="bodyPostId" name="bodyPost" rows="15" required></textarea>
+  				</div>
+  				<button type="submit" class="btn btn-success btn-lg btn-block">Add</button>
+			</form>
+		</div>
+	</div>	
+		
+{% endblock %}	
