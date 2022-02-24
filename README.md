@@ -35,8 +35,6 @@ Functionalities available for the admin users on the Microblog web site:
 
 ✅ Edit admin users' privileges and give a admin user status
 
-Views from the RidePal web application
-
 To run Microblog project:
 
 1. Clone the project's repository locally
