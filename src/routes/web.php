@@ -2,6 +2,7 @@
 
 use App\Models\User;
 use App\Models\Posts;
+use App\Auth\Auth;
 use App\Controllers\PostsController;
 use App\Controllers\UserController;
 use App\Middleware\RedirectToLogin;
@@ -17,13 +18,13 @@ $app->get('/deletePost/{ID}', PostsController::class. ':deletePost')->setName('p
 
 $app->get('/register', UserController::class. ':registerShow')->setName('registerShow');
 $app->post('/register', UserController::class. ':registerUser')->setName('registerUser');
-$app->get('/login', UserController::class. ':loginShow')->setName('loginShow');
-$app->post('/login', UserController::class. ':loggedUser')->setName('loggedUser');
+$app->get('/login', Auth::class. ':loginShow')->setName('loginShow');
+$app->post('/login', Auth::class. ':loggedUser')->setName('loggedUser');
 $app->get('/editUser', UserController::class. ':editUserShow')->setName('editUserShow')->add(new RedirectToLogin($container['router']));
 $app->post('/editUser', UserController::class. ':editUser')->setName('editUser');
 $app->get('/privileges', UserController::class. ':indexAdmin')->setName('privileges')->add(new RedirectToLogin($container['router']));
 $app->get('/delete', UserController::class. ':deleteUser')->setName('deleteUser')->add(new RedirectToLogin($container['router']));
-$app->get('/logout', UserController::class. ':logoutUser')->setName('logoutUser')->add(new RedirectToLogin($container['router']));
+$app->get('/logout', Auth::class. ':logoutUser')->setName('logoutUser')->add(new RedirectToLogin($container['router']));
 $app->get('/editUserRole/{ID}', UserController::class. ':giveAdminRole')->setName('giveAdminRole')->add(new RedirectToLogin($container['router']));
 $app->get('/editAdminRole/{ID}', UserController::class. ':giveUserRole')->setName('giveUserRole')->add(new RedirectToLogin($container['router']));
 

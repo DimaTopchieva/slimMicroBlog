@@ -9,18 +9,27 @@
 				<div class="form-group">
     				<label for="usernameID">Username:</label>
     				<input type="text" name="username" class="form-control" value="{{ auth.checkUserLoggedIn.Name }}" id="usernameID" maxlength="255" required>
+  					{% if Validator.validateUsername %}
+    					<p>{{ Validator.validateUsername }}</p>
+    				{% endif %}
   				</div>
   				<div class="form-group">
     				<label for="emailID">Email:</label>
     				<input type="email" name="email" class="form-control" value="{{ auth.checkUserLoggedIn.email }}" id="emailID" maxlength="255" pattern="[a-zA-Z0-9._%+-]+@[a-z0-9.-]+\.[a-zA-Z]{2,4}" required>
+  					{% if Validator.validateEmail %}
+    				 	<p>{{ Validator.validateEmail }}</p>
+    				{% endif %}
   				</div>
   				<div class="form-group">
     				<label for="passwordID">Password:</label>
-    				<input type="password" name="password" class="form-control" id="passwordID" minlength="8" maxlength="12" required>
+    				<input type="password" name="password" class="form-control" id="passwordID" minlength="8" maxlength="255" required>
+  					{% if Validator.validatePassword %}
+    					<p>{{ Validator.validatePassword }}</p>
+    				{% endif %}
   				</div>
   				<div class="form-group">
     				<label for="cpasswordID">Confirm password:</label>
-    				<input type="password" name="cpassword" class="form-control" id="cpasswordID" minlength="8" maxlength="12" required>
+    				<input type="password" name="cpassword" class="form-control" id="cpasswordID" minlength="8" maxlength="255" required>
   				</div>
   				<button type="submit" class="btn btn-success btn-lg btn-block">Edit your profile</button>
 			</form>			

@@ -8,6 +8,7 @@ class Posts
     public $title;
     public $content;
     public $image;
+    public $created_by;
     public $created_At;
    
     public function __construct() {      

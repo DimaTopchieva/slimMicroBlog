@@ -5,12 +5,13 @@ namespace App\Controllers;
 use PDO;
 use App\Models\User;
 use App\Auth\Auth;
+use App\Validator\Validator;
 
 class UserController extends Controller
 {
 	public function registerShow($Request, $Response, $args)
 	{
-    	return $this->c->view->render($Response, 'auth/register.twig');
+    	return $this->c->view->render($Response, 'users/register.twig');
 	}
 	
 	public function registerUser($Request, $Response, $args)
@@ -20,42 +21,31 @@ class UserController extends Controller
     	$pass = $Request->getParam('password');
     	$cpass = $Request->getParam('cpassword'); 
     	
-    	if ($pass === $cpass) {
+    	unset($_SESSION["usernameError"]);
+    	unset($_SESSION["emailError"]);
+    	unset($_SESSION["passError"]);
+    	
+    	$_SESSION["usernameError"] = Validator::validateUsername($name);
+    	$_SESSION["emailError"] = Validator::validateEmail($email);
+    	$_SESSION["passError"] = Validator::validatePassword($pass);
+    	
+    	if ($pass === $cpass && $_SESSION["usernameError"] == NULL && $_SESSION["emailError"] == NULL && $_SESSION["passError"] == NULL) {
+  			$hashed_password = password_hash($pass, PASSWORD_DEFAULT);
   			$insertQuery = $this->c->db->prepare("INSERT INTO Users (Name, email, password, role_id) VALUES (:name, :email, :pass, 1)");
 			$insertQuery->execute([
 				'name' => $name,
 				'email' => $email,
-				'pass' => $pass
+				'pass' => $hashed_password
 			]);
-		}  		
-    	return $Response->withRedirect($this->c->router->pathFor('home'));
-	}
-	
-	public function loginShow($Request, $Response)
-	{
-    	return $this->c->view->render($Response, 'auth/login.twig', );
-	}
-	
-	public function loggedUser($Request, $Response, $args)
-	{
-		$name = $Request->getParam('username');
-    	$pass = $Request->getParam('password'); 	
-    	$query = $this->c->db->prepare("SELECT * FROM Users WHERE Name = :name AND password = :password");	
-		$query->execute([
-			'name' => $name,
-			'password' => $pass
-		]);	
-		$foundUser = $query->fetchAll(PDO::FETCH_CLASS, User::class);	
-		if (count($foundUser) == 1) {
-  			$_SESSION['loggedInUser_ID'] = $foundUser[0]->ID;
-  			
-    		return $Response->withRedirect($this->c->router->pathFor('home'));
-		}
+			return $Response->withRedirect($this->c->router->pathFor('loginShow'));
+		}  else {
+    		return $Response->withRedirect($this->c->router->pathFor('registerShow'));
+    	}
 	}
 	
 	public function editUserShow($Request, $Response, $args)
 	{
-    	return $this->c->view->render($Response, 'auth/userEdit.twig');
+    	return $this->c->view->render($Response, 'users/userEdit.twig');
 	}
 	
 	public function editUser($Request, $Response, $args)
@@ -65,16 +55,26 @@ class UserController extends Controller
     	$pass = $Request->getParam('password');
     	$cpass = $Request->getParam('cpassword'); 
     	
-    	if ($pass === $cpass) {
+    	unset($_SESSION["usernameError"]);
+    	unset($_SESSION["emailError"]);
+    	unset($_SESSION["passError"]);
+    	
+    	$_SESSION["usernameError"] = Validator::validateUsername($name);
+    	$_SESSION["emailError"] = Validator::validateEmail($email);
+    	$_SESSION["passError"] = Validator::validatePassword($pass);
+    	
+    	if ($pass === $cpass && $_SESSION["usernameError"] == NULL && $_SESSION["emailError"] == NULL && $_SESSION["passError"] == NULL) {
+  			$hashed_password = password_hash($pass, PASSWORD_DEFAULT);
   			$editQuery = $this->c->db->prepare("UPDATE Users SET Name = :name, email = :email, password = :password WHERE ID = :usertID");
 			$editQuery->execute([
 				'name' => $name,
 				'email' => $email,
-				'password' => $pass,
+				'password' => $hashed_password,
 				'usertID' => $_SESSION['loggedInUser_ID']
 			]);	
-		}  		
-    	return $Response->withRedirect($this->c->router->pathFor('home'));
+			return $Response->withRedirect($this->c->router->pathFor('home'));
+		} else
+			return $Response->withRedirect($this->c->router->pathFor('editUserShow'));
 	}
 	
 	public function indexAdmin($Request, $Response)
@@ -87,18 +87,10 @@ class UserController extends Controller
 		if ($usersAdmins !== FALSE) {
     		$usersAdmins=$usersAdmins->fetchAll(PDO::FETCH_CLASS, User::class);
 		}
-    	return $this->c->view->render($Response, 'auth/adminEdit.twig', [
+    	return $this->c->view->render($Response, 'users/adminEdit.twig', [
     		'users' => $users,
     		'usersAdmins' => $usersAdmins
     	]);
-	}
-	
-	public function logoutUser($Request, $Response)
-	{
-		
-		unset($_SESSION['loggedInUser_ID']);
-	
-    	return $Response->withRedirect($this->c->router->pathFor('home'));
 	}
 	
 	public function deleteUser($Request, $Response)

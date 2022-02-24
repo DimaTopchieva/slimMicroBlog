@@ -4,10 +4,15 @@
 
 {% block content %}
 		{% if viewPost %}
-			<div class = "row">
-    			<div class = "col-md-10 offset-1">
-    				<h2>{{ viewPost.title }}</h2>
-    				<p>{{ viewPost.content }}</p>
+			<div class = "row text-left">
+    			<div class = "col-md-8 offset-2 my-3">
+    				<h1 class="my-3 text-center">{{ viewPost.title }}</h1>
+    				{% if viewPost.image %}
+    					<div class="text-center">
+    						<img src="../images/{{ viewPost.image }}" class="img-fluid my-2" alt="{{ viewPost.image }}">
+    					</div>
+    				{% endif %}
+    				<p class="my-4">{{ viewPost.content }}</p>
     				{% if auth.checkUserLoggedIn.role_id == 2 %}
         				<a href = "{{ path_for('post.edit', { 'ID': viewPost.ID}) }}" class = "btn btn-primary">Edit</a>
     					<a href = "{{ path_for('post.delete', { 'ID': viewPost.ID}) }}" class = "btn btn-danger">Delete</a>

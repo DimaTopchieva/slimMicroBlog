@@ -5,14 +5,24 @@
 {% block content %}	
 	<div class = "row">
 		<div class = "col-md-10 offset-1"> 
-			<form action="{{ path_for('post.editRed', { 'ID': editPost.ID}) }}" method="POST">
+			<form action="{{ path_for('post.editRed', { 'ID': editPost.ID}) }}" method="POST" enctype="multipart/form-data">
   				<div class="form-group">
     				<label for="titleId">Post title</label>
     				<input type="text" class="form-control" name="title" id="titleId" maxlength="255" value="{{ editPost.title }}" required >
+    				{% if Validator.validatePostTitle %}
+    					<p>{{ Validator.validatePostTitle }}</p>
+    				{% endif %}
   				</div>
+  				<div class="custom-file">
+  					<input type="file" class="custom-file-input" name="postImage" id="customFile">
+  					<label class="custom-file-label" for="customFile">Choose file</label>
+				</div>
   				<div class="form-group">
     				<label for="bodyPostId">Content</label>
     				<textarea class="form-control" id="bodyPostId" name="bodyPost" rows="15" required>{{ editPost.content }}</textarea>
+    				{% if Validator.validatePostBody %}
+    					<p>{{ Validator.validatePostBody }}</p>
+    				{% endif %}
   				</div>
   				<button type="submit" class="btn btn-success btn-lg btn-block">Edit</button>
 			</form>

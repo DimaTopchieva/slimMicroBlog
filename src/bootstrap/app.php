@@ -2,6 +2,12 @@
 
 session_start();
 
+unset($_SESSION["usernameError"]);
+unset($_SESSION["emailError"]);
+unset($_SESSION["passError"]);
+unset($_SESSION["titleError"]);
+unset($_SESSION["postBodyError"]);
+
 use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
 
@@ -23,6 +29,14 @@ $container['auth'] = function ($container) {
 	return new \App\Auth\Auth($container);  
 };
 
+$container['DBQueries'] = function ($container) {
+	return new \App\DBQueries\DBQueries($container);  
+};
+
+$container['Validator'] = function () {
+	return new \App\Validator\Validator();  
+};
+
 $container['view'] = function ($container) {
     $view = new \Slim\Views\Twig(__DIR__ . '/../resources/views', [
         'cache' => false
@@ -37,6 +51,15 @@ $container['view'] = function ($container) {
     	'checkIfLoggedIn' => $container->auth->checkIfLoggedIn(),
     	'checkUserLoggedIn' => $container->auth->checkUserLoggedIn()
     ]);
+    
+	$view->getEnvironment()->addGlobal('Validator', [
+    	'validateUsername' => $_SESSION["usernameError"],
+    	'validateEmail' => $_SESSION["emailError"],
+    	'validatePassword' => $_SESSION["passError"],
+    	'validatePostTitle' => $_SESSION["titleError"],
+    	'validatePostBody' => $_SESSION["postBodyError"]
+    ]);
+    
 
     return $view;
 };
